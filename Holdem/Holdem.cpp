@@ -2,12 +2,14 @@
 //
 
 #include <iostream>
-#include "deck.h"
+#include "player.h"
+
 int main(){
 
 	Deck d = Deck();
 	d.shuffle();
 
+	Player pl1 = Player(1);
 	std::vector<Card> hand; 
 	for (int i = 0; i < 5; ++i) {
 		hand.push_back(d.deal());
