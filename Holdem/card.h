@@ -5,7 +5,7 @@ class Card {
 public:
 	Card(int rank, int suit); 
 	Card();
-	std::string print();
+	std::string getName();
 private:
 	int rank;
 	int suit;	//Heart♥, Diamond♦, Club♣, Spade♠

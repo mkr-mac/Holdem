@@ -1,23 +1,34 @@
 // Holdem.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
-
+//#include "pch.h"
 #include <iostream>
 #include "player.h"
 
 int main(){
+	system("CLS");
+	std::cout << "Welcome to Holdem!\n\n";
+	std::cout << "How many players? ";
+	int p = 0;
+	while(p<1){
+		std::cin >> p;
+	}
+	
+	std::vector<Player> players;
+	for (int i = 0; i < p; ++i) {
+		players.push_back(Player(i));
+	}
 
 	Deck d = Deck();
 	d.shuffle();
 
-	Player pl1 = Player(1);
-	std::vector<Card> hand; 
-	for (int i = 0; i < 5; ++i) {
-		hand.push_back(d.deal());
+	for (Player p : players) {
+		for (int c = 0; c < 2; ++c) {
+			p.getCard(d.deal());
+		}
+		//std::cout << p.printHand() << "\n";
 	}
 
-	for (Card card : hand) {
-		std::cout << card.print();
-	}
+
 
 	return 0;
 }

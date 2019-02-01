@@ -13,6 +13,6 @@ Card::Card() {
 	//PLZ NO
 }
 
-std::string Card::print() {
+std::string Card::getName() {
 	return name;
 };
