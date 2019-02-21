@@ -1,8 +1,9 @@
-// Holdem.cpp : This file contains the 'main' function. Program execution begins and ends there.
+
 //
 //#include "pch.h"
 #include <iostream>
 #include "player.h"
+#include "adjudicator.h"
 
 int main(){
 	system("CLS");
@@ -11,13 +12,13 @@ int main(){
 
 	//int sockfd = socket(domain, type, protocol);
 
-	int p = 0;
-	while(p<1){
-		std::cin >> p;
+	int n = 0;
+	while(n<1){
+		std::cin >> n;
 	}
 	
 	std::vector<Player> players;
-	for (int i = 0; i < p; ++i) {
+	for (int i = 0; i < n; ++i) {
 		players.push_back(Player(i));
 	}
 
@@ -30,18 +31,38 @@ int main(){
 		for (int c = 0; c < 2; ++c) {
 			p.getCard(d.deal());
 		}
-		//std::cout << p.printHand() << "\n";
+		std::cout << p.printHand() << "\n";
 	}
 
 	for (int c = 0; c < 5; ++c) {
 		publicHand.push_back(d.deal());
 	}
 
-	for (Player p : players) {
-		p.bestHandValue(publicHand);
+	std::string h = "";
+
+	for (Card c : publicHand) {
+		h += c.getName();
 	}
 
+	Adjudicator adj = Adjudicator();
+	
+	std::cout << "Public: " << h << std::endl;
 
+	
+	for (Player p : players) {
+		std::cout << "Player " << std::to_string(p.getId()) << ": " ;
+		std::cout << p.printHand() << std::endl;
+		p.score = adj.handValue(publicHand, p.getHand());
+		std::cout << "Score: ";
+		for (int i : p.score) {
+			std::cout << std::to_string(i) + ", ";
+		}
+		std::cout << "\n";
+	}
+
+	for (Player p : players) {
+
+	}
 
 	return 0;
 }

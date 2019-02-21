@@ -23,6 +23,10 @@ void Player::emptyHand() {
 	hand.clear();
 }
 
-std::vector<int> Player::bestHandValue(std::vector<Card> publicHand) {
+std::vector<Card> Player::getHand() {
+	return hand;
+}
 
+int Player::getId() {
+	return id;
 }
