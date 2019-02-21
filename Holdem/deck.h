@@ -2,6 +2,7 @@
 #include "card.h"
 #include <vector>
 #include <random>
+#include <algorithm>
 #include <time.h>
 
 class Deck {

@@ -16,3 +16,11 @@ Card::Card() {
 std::string Card::getName() {
 	return name;
 };
+
+int Card::getRank() {
+	return rank;
+}
+
+int Card::getSuit() {
+	return suit;
+}

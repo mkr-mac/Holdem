@@ -8,8 +8,9 @@ public:
 	void getCard(Card c);
 	std::string printHand();
 	void emptyHand();
+	std::vector<int> bestHandValue(std::vector<Card> publicHand);
+	std::vector<Card> hand;
 
 private:
-	std::vector<Card> hand;
 	int funds;
 };

@@ -8,6 +8,9 @@ int main(){
 	system("CLS");
 	std::cout << "Welcome to Holdem!\n\n";
 	std::cout << "How many players? ";
+
+	//int sockfd = socket(domain, type, protocol);
+
 	int p = 0;
 	while(p<1){
 		std::cin >> p;
@@ -21,11 +24,21 @@ int main(){
 	Deck d = Deck();
 	d.shuffle();
 
+	std::vector<Card> publicHand;
+
 	for (Player p : players) {
 		for (int c = 0; c < 2; ++c) {
 			p.getCard(d.deal());
 		}
 		//std::cout << p.printHand() << "\n";
+	}
+
+	for (int c = 0; c < 5; ++c) {
+		publicHand.push_back(d.deal());
+	}
+
+	for (Player p : players) {
+		p.bestHandValue(publicHand);
 	}
 
 

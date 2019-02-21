@@ -22,3 +22,7 @@ std::string Player::printHand() {
 void Player::emptyHand() {
 	hand.clear();
 }
+
+std::vector<int> Player::bestHandValue(std::vector<Card> publicHand) {
+
+}
