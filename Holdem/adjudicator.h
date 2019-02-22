@@ -5,7 +5,7 @@
 
 class Adjudicator {
 public:
-	std::vector<int> handValue		(std::vector<Card> publicHand, std::vector<Card> playerHand);
+	std::vector<int> handValue		(std::vector<Card> communityCards, std::vector<Card> playerHand);
 
 private:
 	std::vector<int> combinationChecker	(std::vector<Card> bh, std::vector<int> score, int off = 0, int k = 5);

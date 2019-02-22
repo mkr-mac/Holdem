@@ -2,11 +2,11 @@
 
 std::vector<Card> h(5);
 
-std::vector<int> Adjudicator::handValue(std::vector<Card> publicHand, std::vector<Card> playerHand) {
+std::vector<int> Adjudicator::handValue(std::vector<Card> communityCards, std::vector<Card> playerHand) {
 	//make one big hand to mess with
 	std::vector<Card> bigHand;
 
-	for (Card c : publicHand) {
+	for (Card c : communityCards) {
 		bigHand.push_back(c);
 	}
 	for (Card d : playerHand) {
@@ -23,7 +23,8 @@ std::vector<int> Adjudicator::handValue(std::vector<Card> publicHand, std::vecto
 }
 
 std::vector<int> Adjudicator::combinationChecker(std::vector<Card> bh, std::vector<int> score, int off, int k) {
-
+	// Recursion.
+	//Yeah, I'm supprised it works too.
 	if (k == 0) {
 		score = std::max(checkHand(h, score), score);
 		std::vector<Card> t_h(5);
@@ -41,28 +42,28 @@ std::vector<int> Adjudicator::combinationChecker(std::vector<Card> bh, std::vect
 }
 
 std::vector<int> Adjudicator::checkHand(std::vector<Card> h, std::vector<int> score) {
-
+	// We only check hands of same or better base score
 	int base = score[0];
 	// cool
 	switch (base) {
 	case 0:
 		score = std::max(junkHighCard(h), score);
-		score = std::max(pair(h), score);
 	case 1:
-		score = std::max(twoPair(h), score);
+		score = std::max(pair(h), score);
 	case 2:
-		score = std::max(threeOfAKind(h), score);
+		score = std::max(twoPair(h), score);
 	case 3:
-		score = std::max(straight(h), score);
+		score = std::max(threeOfAKind(h), score);
 	case 4:
-		score = std::max(flush(h), score);
+		score = std::max(straight(h), score);
 	case 5:
-		score = std::max(fullHouse(h), score);
+		score = std::max(flush(h), score);
 	case 6:
-		score = std::max(fourOfAKind(h), score);
+		score = std::max(fullHouse(h), score);
 	case 7:
-		score = std::max(straightFlush(h), score);
+		score = std::max(fourOfAKind(h), score);
 	case 8:
+		score = std::max(straightFlush(h), score);
 		score = std::max(royalFlush(h), score);
 	case 9:
 		// Royal flush was achieved.
@@ -77,6 +78,7 @@ std::vector<int> Adjudicator::checkHand(std::vector<Card> h, std::vector<int> sc
 }
 
 std::vector<int> Adjudicator::royalFlush(std::vector<Card> hand) {
+
 	int r = hand[0].getRank();
 	if (r!=12) { return{ 0, 0, 0, 0, 0, 0 }; }
 
@@ -121,7 +123,7 @@ std::vector<int> Adjudicator::fullHouse(std::vector<Card> hand) {
 
 	if (hand[3].getRank() != hand[4].getRank()) { return{ 0, 0, 0, 0, 0, 0 }; }
 
-	return { 6, r, hand[3].getRank(), 0, 0, 0 };
+	return { 6, std::max(r, hand[3].getRank()), std::min(r, hand[3].getRank()), 0, 0, 0 };
 }
 
 std::vector<int> Adjudicator::flush(std::vector<Card> hand) {
@@ -197,7 +199,10 @@ std::vector<int> Adjudicator::twoPair(std::vector<Card> hand) {
 std::vector<int> Adjudicator::pair(std::vector<Card> hand) {
 	for (int i = 0; i < 4; ++i) {
 		if (hand[i].getRank() == hand[i + 1].getRank()) {
-			return { 1, hand[i].getRank(), 0, 0, 0, 0 };
+			return { 1, 
+					hand[i].getRank(), 
+					std::max(std::max(hand[(i + 2) % 5].getRank(), hand[(i + 3) % 5].getRank()), hand[(i + 4) % 5].getRank()),
+					0, 0, 0 };
 		}
 	}
 	return{ 0, 0, 0, 0, 0, 0 };

@@ -13,7 +13,7 @@ int main(){
 	//int sockfd = socket(domain, type, protocol);
 
 	int n = 0;
-	while(n<1){
+	while(n<1 || n>=10){
 		std::cin >> n;
 	}
 	
@@ -23,44 +23,88 @@ int main(){
 		players.push_back(Player(i));
 	}
 
-	Deck d;
-	d.shuffle();
+	std::cout << "How many games? ";
 
-	std::vector<Card> publicHand;
+	int games = 0;
+	while (games < 1 || games>99) {
+		std::cin >> games;
+	}
 
-	for (Player& q : players) {
-		for (int c = 0; c < 2; ++c) {
-			q.getCard(d.deal());
+	while (games > 0) {
+
+		Deck d;
+		d.shuffle();
+
+		// TODO: Ante
+
+		for (Player& q : players) {
+			for (int c = 0; c < 2; ++c) {
+				q.getCard(d.deal());
+			}
 		}
-	}
 
-	for (int c = 0; c < 5; ++c) {
-		publicHand.push_back(d.deal());
-	}
+		std::vector<Card> communityCards;
+		
+		for (int br = 0; br < 4; ++br) {
+			// TODO: Betting round here
 
-	std::string h = "";
+			// Cards dealt by round
+			switch (br) {
+			case 0:
+				// Pre-flop
+				break;
+			case 1:
+				// Flop
+				for (int c = 0; c < 3; ++c) { communityCards.push_back( d.deal() ); }
+				break;
+			case 2:
+				// Turn
+			case 3:
+				// River
+				communityCards.push_back( d.deal() );
+				break;
+			}
 
-	for (Card c : publicHand) {
-		h += c.getName();
-	}
+			std::string h = "";
 
-	Adjudicator adj;
-	
-	std::cout << "Public: " << h << std::endl;
+			for (Card& c : communityCards) {
+				h += c.getName();
+			}
 
-	
-	for (Player& p : players) {
-		std::cout << "Player " << std::to_string(p.getId()) << ": " ;
-		std::string a = p.printHand();
+			std::cout << "Community: " << h << std::endl;
 
-		std::cout << a << std::endl;
+			for (Player& p : players) {
+				std::cout << "Player " << std::to_string(p.getId()) << ": "  << p.printHand() << std::endl;
+			}
 
-		p.score = adj.handValue(publicHand, p.getHand());
-		std::cout << "Score: ";
-		for (int i : p.score) {
-			std::cout << std::to_string(i) + ", ";
+			std::cin.get();
+
+			std::system("CLS");
 		}
-		std::cout << "\n";
+
+		Adjudicator adj;
+
+		std::string h = "";
+		for (Card& c : communityCards) { h += c.getName(); }
+		std::cout << "Community: " << h << std::endl;
+
+		for (Player& p : players) {
+			std::cout << "Player " << std::to_string(p.getId()) << ": " << p.printHand() << std::endl;
+
+			p.score = adj.handValue(communityCards, p.getHand());
+			std::cout << "Score:    ";
+			for (int i : p.score) {
+				std::cout << std::to_string(i) + ", ";
+			}
+			std::cout << std::endl;
+			p.emptyHand();
+		}
+
+		std::cin.get();
+
+		std::system("CLS");
+
+		--games;
 	}
 
 	return 0;
