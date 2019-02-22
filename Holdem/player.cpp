@@ -13,7 +13,7 @@ std::string Player::printHand() {
 	std::string h = "";
 
 	for (Card c : hand) {
-		h += c.getName(); 
+		h += c.getName();
 	}
 
 	return h;

@@ -6,7 +6,7 @@ const std::string s = "HDCS";	//"♥♦♣♠";
 Card::Card(int rank, int suit) {
 	this->rank = rank;
 	this->suit = suit;
-	name = "[" + r.substr(this->rank, 1) + s.substr(this->suit, 1) + "]";
+	name = "[" + r.substr(rank, 1) + s.substr(suit, 1) + "]";
 };
 
 Card::Card() {

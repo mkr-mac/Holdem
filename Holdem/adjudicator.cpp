@@ -25,43 +25,45 @@ std::vector<int> Adjudicator::handValue(std::vector<Card> publicHand, std::vecto
 std::vector<int> Adjudicator::combinationChecker(std::vector<Card> bh, std::vector<int> score, int off, int k) {
 
 	if (k == 0) {
-		checkHand(h, score);
+		score = std::max(checkHand(h, score), score);
 		std::vector<Card> t_h(5);
 		std::reverse_copy(h.begin(), h.end(), t_h.begin());
-		checkHand(t_h, score);
-		return;
+		score = std::max(checkHand(t_h, score), score);
+		return score;
 	}
 	for (int i = off; i <= bh.size() - k; ++i) {
 		h.push_back(bh[i]);
-		combinationChecker(bh, score, i + 1, k - 1);
+		score = std::max(combinationChecker(bh, score, i + 1, k - 1), score);
 		h.pop_back();
 	}
+
+	return score;
 }
 
 std::vector<int> Adjudicator::checkHand(std::vector<Card> h, std::vector<int> score) {
 
+	int base = score[0];
 	// cool
-	switch (score[0]) {
+	switch (base) {
 	case 0:
-		junkHighCard(h);
+		score = std::max(junkHighCard(h), score);
+		score = std::max(pair(h), score);
 	case 1:
-		pair(h);
+		score = std::max(twoPair(h), score);
 	case 2:
-		twoPair(h);
+		score = std::max(threeOfAKind(h), score);
 	case 3:
-		threeOfAKind(h);
+		score = std::max(straight(h), score);
 	case 4:
-		straight(h);
+		score = std::max(flush(h), score);
 	case 5:
-		flush(h);
+		score = std::max(fullHouse(h), score);
 	case 6:
-		fullHouse(h);
+		score = std::max(fourOfAKind(h), score);
 	case 7:
-		fourOfAKind(h);
+		score = std::max(straightFlush(h), score);
 	case 8:
-		straightFlush(h);
-		royalFlush(h);
-		break;
+		score = std::max(royalFlush(h), score);
 	case 9:
 		// Royal flush was achieved.
 		// Go home my boy, you can do no better.
@@ -71,17 +73,18 @@ std::vector<int> Adjudicator::checkHand(std::vector<Card> h, std::vector<int> sc
 		printf("ERROR: Adjudicator case default statement reached.");
 		break;
 	}
+	return score;
 }
 
 std::vector<int> Adjudicator::royalFlush(std::vector<Card> hand) {
 	int r = hand[0].getRank();
-	if (r!=12) { return; }
+	if (r!=12) { return{ 0, 0, 0, 0, 0, 0 }; }
 
 	int s = hand[0].getSuit();
 
 	for (int i = 1; i < 5; ++i) {
 		if ((hand[i].getSuit() != s) || 
-			(hand[i].getRank() != r - i)) { return; }
+			(hand[i].getRank() != r - i)) { return{ 0, 0, 0, 0, 0, 0 }; }
 	}
 	
 	return { 9, 0, 0, 0, 0, 0 };
@@ -93,7 +96,7 @@ std::vector<int> Adjudicator::straightFlush(std::vector<Card> hand) {
 
 	for (int i = 1; i < 5; ++i) {
 		if ((hand[i].getSuit() != s) ||
-			(hand[i].getRank() != r - i)) { return; }
+			(hand[i].getRank() != r - i)) { return{ 0, 0, 0, 0, 0, 0 }; }
 	}
 
 	return { 8, r, 0, 0, 0, 0 };
@@ -103,7 +106,7 @@ std::vector<int> Adjudicator::fourOfAKind(std::vector<Card> hand) {
 	int r = hand[0].getRank();
 
 	for (int i = 1; i < 4; ++i) {
-		if (hand[i].getRank() != r) { return; }
+		if (hand[i].getRank() != r) { return{ 0, 0, 0, 0, 0, 0 }; }
 	}
 
 	return { 7, r, hand[4].getRank(), 0, 0, 0 };
@@ -113,10 +116,10 @@ std::vector<int> Adjudicator::fullHouse(std::vector<Card> hand) {
 	int r = hand[0].getRank();
 
 	for (int i = 1; i < 3; ++i) {
-		if (hand[i].getRank() != r) { return; }
+		if (hand[i].getRank() != r) { return{ 0, 0, 0, 0, 0, 0 }; }
 	}
 
-	if (hand[3].getRank() != hand[4].getRank()) { return; }
+	if (hand[3].getRank() != hand[4].getRank()) { return{ 0, 0, 0, 0, 0, 0 }; }
 
 	return { 6, r, hand[3].getRank(), 0, 0, 0 };
 }
@@ -126,7 +129,7 @@ std::vector<int> Adjudicator::flush(std::vector<Card> hand) {
 
 	for (int i = 1; i < 5; ++i) {
 		if ((hand[i].getSuit() != s) ||
-			(hand[i].getRank() >= hand[i-1].getRank())) { return; }
+			(hand[i].getRank() >= hand[i-1].getRank())) { return{ 0, 0, 0, 0, 0, 0 }; }
 	}
 
 	return { 5, hand[0].getRank(), hand[1].getRank(), hand[2].getRank(),
@@ -137,7 +140,7 @@ std::vector<int> Adjudicator::straight(std::vector<Card> hand) {
 	int r = hand[0].getRank();
 
 	for (int i = 1; i < 5; ++i) {
-		if (hand[i].getRank() != r - i) { return; }
+		if (hand[i].getRank() != r - i) { return{ 0, 0, 0, 0, 0, 0 }; }
 	}
 
 	return { 4, r, 0, 0, 0, 0 };
@@ -158,7 +161,7 @@ std::vector<int> Adjudicator::threeOfAKind(std::vector<Card> hand) {
 					std::min(hand[0].getRank(), hand[4].getRank()), 
 					0, 0 };
 	}
-	return;
+	return{ 0, 0, 0, 0, 0, 0 };
 }
 
 std::vector<int> Adjudicator::twoPair(std::vector<Card> hand) {
@@ -188,7 +191,7 @@ std::vector<int> Adjudicator::twoPair(std::vector<Card> hand) {
 					std::min(hand[1].getRank(), hand[3].getRank()),
 					hand[0].getRank(), 0, 0 };
 	}
-	return;
+	return{ 0, 0, 0, 0, 0, 0 };
 }
 
 std::vector<int> Adjudicator::pair(std::vector<Card> hand) {
@@ -197,7 +200,7 @@ std::vector<int> Adjudicator::pair(std::vector<Card> hand) {
 			return { 1, hand[i].getRank(), 0, 0, 0, 0 };
 		}
 	}
-	return;
+	return{ 0, 0, 0, 0, 0, 0 };
 }
 
 std::vector<int> Adjudicator::junkHighCard(std::vector<Card> hand) {
@@ -206,4 +209,5 @@ std::vector<int> Adjudicator::junkHighCard(std::vector<Card> hand) {
 		return { 0, hand[0].getRank(), hand[1].getRank(), hand[2].getRank(),
 					hand[3].getRank(), hand[4].getRank() };
 	}
+	return{ 0,0,0,0,0,0 };
 }
