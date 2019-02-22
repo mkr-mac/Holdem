@@ -23,16 +23,15 @@ int main(){
 		players.push_back(Player(i));
 	}
 
-	Deck d = Deck();
+	Deck d;
 	d.shuffle();
 
 	std::vector<Card> publicHand;
 
-	for (Player q : players) {
+	for (Player& q : players) {
 		for (int c = 0; c < 2; ++c) {
 			q.getCard(d.deal());
 		}
-		//std::cout << q.printHand() << "\n";
 	}
 
 	for (int c = 0; c < 5; ++c) {
@@ -45,12 +44,12 @@ int main(){
 		h += c.getName();
 	}
 
-	Adjudicator adj = Adjudicator();
+	Adjudicator adj;
 	
 	std::cout << "Public: " << h << std::endl;
 
 	
-	for (Player p : players) {
+	for (Player& p : players) {
 		std::cout << "Player " << std::to_string(p.getId()) << ": " ;
 		std::string a = p.printHand();
 
