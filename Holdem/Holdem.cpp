@@ -4,10 +4,13 @@
 #include <iostream>
 #include "player.h"
 #include "adjudicator.h"
+#include "config.h"
+
+#ifndef TEST
 
 int main(){
 	system("CLS");
-	std::cout << "Welcome to Holdem!\n\n";
+	std::cout << "Welcome to Holdem!" << std::endl << std::endl;
 	std::cout << "How many players? ";
 
 	//int sockfd = socket(domain, type, protocol);
@@ -20,7 +23,7 @@ int main(){
 	std::vector<Player> players;
 
 	for (int i = 0; i < n; ++i) {
-		players.push_back(Player(i));
+		players.emplace_back(i);
 	}
 
 	std::cout << "How many games? ";
@@ -30,6 +33,8 @@ int main(){
 		std::cin >> games;
 	}
 
+	std::system("CLS");
+
 	while (games > 0) {
 
 		Deck d;
@@ -37,9 +42,9 @@ int main(){
 
 		// TODO: Ante
 
-		for (Player& q : players) {
+		for (Player& p : players) {
 			for (int c = 0; c < 2; ++c) {
-				q.getCard(d.deal());
+				p.giveCard(d.deal());
 			}
 		}
 
@@ -66,15 +71,14 @@ int main(){
 			}
 
 			std::string h = "";
-
 			for (Card& c : communityCards) {
 				h += c.getName();
 			}
 
-			std::cout << "Community: " << h << std::endl;
+			std::cout << "Community: " << h << std::endl << std::endl;
 
 			for (Player& p : players) {
-				std::cout << "Player " << std::to_string(p.getId()) << ": "  << p.printHand() << std::endl;
+				std::cout << "Player " << std::to_string(p.getId()) << ": "  << p.printHand() << std::endl << std::endl;
 			}
 
 			std::cin.get();
@@ -82,16 +86,14 @@ int main(){
 			std::system("CLS");
 		}
 
-		Adjudicator adj;
-
 		std::string h = "";
 		for (Card& c : communityCards) { h += c.getName(); }
-		std::cout << "Community: " << h << std::endl;
+		std::cout << "Community: " << h << std::endl << std::endl;
 
 		for (Player& p : players) {
 			std::cout << "Player " << std::to_string(p.getId()) << ": " << p.printHand() << std::endl;
 
-			p.score = adj.handValue(communityCards, p.getHand());
+			p.score = Adjudicator::handValue(communityCards, p.getHand());
 			std::cout << "Score:    ";
 			for (int i : p.score) {
 				std::cout << std::to_string(i) + ", ";
@@ -105,6 +107,7 @@ int main(){
 		std::system("CLS");
 
 		--games;
+		
 	}
 
 	return 0;
@@ -112,3 +115,5 @@ int main(){
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
 // Debug program: F5 or Debug > Start Debugging menu
+
+#endif // !1

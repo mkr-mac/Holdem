@@ -4,7 +4,7 @@
 class Player {
 public:
 	Player(int id);
-	void				getCard(Card c);
+	void				giveCard(Card c);
 	std::string			printHand();
 	void				emptyHand();
 	std::vector<Card>	getHand();

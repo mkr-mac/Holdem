@@ -4,7 +4,7 @@ Player::Player(int id) {
 	this->id = id;
 }
 
-void Player::getCard(Card c) {
+void Player::giveCard(Card c) {
 	hand.push_back(c);
 }
 

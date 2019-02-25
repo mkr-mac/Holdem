@@ -4,7 +4,7 @@
 class Card {
 public:
 	Card(int rank, int suit); 
-	Card();
+	Card();  //delete?
 	std::string getName();
 	int getRank();
 	int getSuit();
@@ -16,5 +16,4 @@ public:
 private:
 	int rank;
 	int suit;	//Heart♥, Diamond♦, Club♣, Spade♠
-	std::string name;
 };

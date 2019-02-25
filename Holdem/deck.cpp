@@ -4,7 +4,7 @@ Deck::Deck() {
 	int cardnum = 0;
 	for (int r=0; r<13; ++r) {
 		for (int s=0; s<4; ++s) {
-			cards.push_back(Card(r, s));
+			cards.emplace_back(r, s);
 		}
 	}
 };
