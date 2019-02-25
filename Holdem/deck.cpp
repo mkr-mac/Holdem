@@ -16,7 +16,6 @@ Card Deck::deal() {
 }
 
 void Deck::shuffle() {
-	srand(time(NULL));
 	std::random_shuffle(cards.begin(), cards.end());
 }
 

@@ -23,7 +23,7 @@ void Player::emptyHand() {
 	hand.clear();
 }
 
-std::vector<Card> Player::getHand() {
+std::vector<Card>& Player::getHand() {
 	return hand;
 }
 

@@ -7,6 +7,8 @@
 #include <vector>
 #include "adjudicator.h"
 #include <time.h> 
+#include <iostream>
+#include "deck.h"
 
 BOOST_AUTO_TEST_CASE(myTestCase)
 {
@@ -19,23 +21,35 @@ BOOST_TEST(t);
 
 BOOST_AUTO_TEST_CASE(myTestCase2)
 {
-	std::srand(time(NULL));
-	for (int i = 0; i < 100000; ++i) {
-		std::vector<Card> a{ 
-			Card(std::rand()%13,std::rand()%4) ,
-			Card(std::rand() % 13,std::rand() % 4) ,
-			Card(std::rand() % 13,std::rand() % 4) ,
-			Card(std::rand() % 13,std::rand() % 4) ,
-			Card(std::rand() % 13,std::rand() % 4) 
-		};
-		std::vector<Card> cc{ 
-			Card(std::rand() % 13,std::rand() % 4) ,
-			Card(std::rand() % 13,std::rand() % 4) 
+	std::vector<int> count{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	srand(time(NULL));
+
+	Deck d;
+	for (int i = 0; i < 1000000; ++i) {
+		d = Deck();
+		d.shuffle();
+		std::vector<Card> p{ 
+			d.deal(),
+			d.deal()
 		};
 
-		Adjudicator::handValue(cc, a);
+		std::vector<Card> com{
+			d.deal(),
+			d.deal(),
+			d.deal(),
+			d.deal(),
+			d.deal()
+		};
+
+		count[Adjudicator::handValue(com, p)[0]]++;
+
 		//BOOST_TEST(t);
 	}
+
+	for (int r = 0; r < 10; ++r) {
+		std::cout << std::to_string(r) << ": " << std::to_string(count[r]) << std::endl;
+	}
+
 	BOOST_TEST(true);
 }
 #endif

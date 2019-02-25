@@ -7,7 +7,7 @@ public:
 	void				giveCard(Card c);
 	std::string			printHand();
 	void				emptyHand();
-	std::vector<Card>	getHand();
+	std::vector<Card>&	getHand();
 	int					getId();
 	std::vector<int>    score{ 0,0,0,0,0,0 };
 
