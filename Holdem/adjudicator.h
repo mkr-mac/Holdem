@@ -5,9 +5,12 @@
 
 class Adjudicator {
 public:
-	static std::vector<int> handValue		(std::vector<Card>& communityCards, std::vector<Card>& playerHand);
+	static std::vector<int> handValue (const std::vector<Card>& communityCards, const std::vector<Card>& playerHand);
 
 private:
+
+	//move this
+	static std::vector<Card> h;
 	static std::vector<int> combinationChecker	(std::vector<Card>& bh,	  std::vector<int>& score, int off = 0, int k = 5);
 	static std::vector<int> checkHand			(std::vector<Card>& hand, std::vector<int>& score);
 	static std::vector<int> royalFlush			(std::vector<Card>& hand);

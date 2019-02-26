@@ -3,7 +3,6 @@
 #include <vector>
 #include <random>
 #include <algorithm>
-#include <time.h>
 
 class Deck {
 public:
