@@ -9,8 +9,8 @@ public:
 
 private:
 
-	//move this
 	static std::vector<Card> h;
+	static std::vector<Card> r_h;
 	static std::vector<int> combinationChecker	(std::vector<Card>& bh,	  std::vector<int>& score, int off = 0, int k = 5);
 	static std::vector<int> checkHand			(std::vector<Card>& hand, std::vector<int>& score);
 	static std::vector<int> royalFlush			(std::vector<Card>& hand);

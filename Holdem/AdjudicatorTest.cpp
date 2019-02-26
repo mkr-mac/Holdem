@@ -25,7 +25,7 @@ BOOST_AUTO_TEST_CASE(myTestCase2)
 	srand(time(NULL));
 
 	Deck d;
-	for (int i = 0; i < 100000; ++i) {
+	for (int i = 0; i < 1000000; ++i) {
 		d = Deck();
 		d.shuffle();
 		std::vector<Card> p{ 
