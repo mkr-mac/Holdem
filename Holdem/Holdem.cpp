@@ -8,7 +8,7 @@
 
 #ifndef TEST
 
-int main(){
+int main() {
 	system("CLS");
 	std::cout << "Welcome to Holdem!" << std::endl << std::endl;
 	std::cout << "How many players? ";
@@ -16,10 +16,10 @@ int main(){
 	//int sockfd = socket(domain, type, protocol);
 
 	int n = 0;
-	while(n<1 || n>=10){
+	while (n < 1 || n >= 10) {
 		std::cin >> n;
 	}
-	
+
 	std::vector<Player> players;
 
 	for (int i = 0; i < n; ++i) {
@@ -49,7 +49,7 @@ int main(){
 		}
 
 		std::vector<Card> communityCards;
-		
+
 		for (int br = 0; br < 4; ++br) {
 			// TODO: Betting round here
 
@@ -60,13 +60,13 @@ int main(){
 				break;
 			case 1:
 				// Flop
-				for (int c = 0; c < 3; ++c) { communityCards.push_back( d.deal() ); }
+				for (int c = 0; c < 3; ++c) { communityCards.push_back(d.deal()); }
 				break;
 			case 2:
 				// Turn
 			case 3:
 				// River
-				communityCards.push_back( d.deal() );
+				communityCards.push_back(d.deal());
 				break;
 			}
 
@@ -78,7 +78,7 @@ int main(){
 			std::cout << "Community: " << h << std::endl << std::endl;
 
 			for (Player& p : players) {
-				std::cout << "Player " << std::to_string(p.getId()) << ": "  << p.printHand() << std::endl << std::endl;
+				std::cout << "Player " << std::to_string(p.getId()) << ": " << p.printHand() << std::endl << std::endl;
 			}
 
 			std::cin.get();
@@ -107,7 +107,7 @@ int main(){
 		std::system("CLS");
 
 		--games;
-		
+
 	}
 
 	return 0;
