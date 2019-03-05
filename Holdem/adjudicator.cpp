@@ -1,7 +1,7 @@
 #include "adjudicator.h"
 
 std::vector<Card> Adjudicator::h(5);
-std::vector<Card> Adjudicator::r_h(5);
+//std::vector<Card> Adjudicator::r_h(5);
 std::vector<int> Adjudicator::score;
 
 std::vector<int> Adjudicator::handValue(const std::vector<Card>& communityCards, const std::vector<Card>& playerHand) {
@@ -18,10 +18,11 @@ std::vector<int> Adjudicator::handValue(const std::vector<Card>& communityCards,
 	score.clear();
 	score.emplace_back(0);
 	h.clear();
-	r_h.clear();
+	//r_h.clear();
 
 
-	std::sort(bigHand.begin(), bigHand.end());
+	std::sort	(bigHand.begin(), bigHand.end());
+	std::reverse(bigHand.begin(), bigHand.end());
 
 	combinationChecker(bigHand);
 	
@@ -33,8 +34,8 @@ void Adjudicator::combinationChecker(std::vector<Card>& bh, int off, int k) {
 	// Yeah, I'm supprised it works too.
 	if (k == 0) {
 		checkHand(h);
-		std::reverse_copy(h.begin(), h.end(), r_h.begin());
-		checkHand(r_h);
+		//std::reverse_copy(h.begin(), h.end(), r_h.begin());
+		//checkHand(r_h);
 		return;
 	}
 	for (int i = off; i <= bh.size() - k; ++i) {
@@ -161,7 +162,7 @@ void Adjudicator::straight(std::vector<Card>& hand) {
 
 void Adjudicator::threeOfAKind(std::vector<Card>& hand) {
 
-	for (int i = 0; i < 2; ++i) {
+	for (int i = 0; i < 3; ++i) {
 		if (hand[0+i].getRank() == hand[1+i].getRank() &&
 			hand[1+i].getRank() == hand[2+i].getRank()) {
 
