@@ -9,7 +9,7 @@ public:
 	Deck();
 	Card deal();
 	void shuffle();
-	void swap();
+	void randomSwap();
 	void cut();
 private:
 	std::vector<Card> cards;

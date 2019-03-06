@@ -18,8 +18,8 @@ void Deck::shuffle() {
 	std::random_shuffle(cards.begin(), cards.end());
 }
 
-void Deck::swap() {
-	//std::swap(cards.begin(), cards.end());
+void Deck::randomSwap() {
+	std::swap(cards[rand()%cards.size()], cards[rand() % cards.size()]);
 }
 
 void Deck::cut() {

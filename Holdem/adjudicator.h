@@ -2,6 +2,7 @@
 #include "card.h"
 #include <vector>
 #include <algorithm>
+#include <math.h>
 
 class Adjudicator {
 public:

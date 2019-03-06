@@ -26,15 +26,18 @@ BOOST_AUTO_TEST_CASE(myTestCase2)
 
 	Deck f_d;
 	Deck d;
+
+	f_d.shuffle();
+
 	for (int i = 0; i < 1000000; ++i) {
+		f_d.randomSwap();
 		d = f_d;
-		d.shuffle();
 
 		std::vector<Card> p{ 
 			d.deal(),
 			d.deal()
 		};
-
+		
 		std::vector<Card> com{
 			d.deal(),
 			d.deal(),

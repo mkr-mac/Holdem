@@ -6,23 +6,22 @@ std::vector<int> Adjudicator::score;
 
 std::vector<int> Adjudicator::handValue(const std::vector<Card>& communityCards, const std::vector<Card>& playerHand) {
 	//make one big hand to mess with
-	std::vector<Card> bigHand;
 
-	for (Card c : communityCards) {
-		bigHand.emplace_back(c.getRank(), c.getSuit());
-	}
+	std::vector<Card> bigHand = communityCards;
+
 	for (Card d : playerHand) {
 		bigHand.emplace_back(d.getRank(), d.getSuit());
 	}
 
 	score.clear();
-	score.emplace_back(0);
 	h.clear();
 	//r_h.clear();
 
 
 	std::sort	(bigHand.begin(), bigHand.end());
 	std::reverse(bigHand.begin(), bigHand.end());
+
+	junkHighCard(bigHand);
 
 	combinationChecker(bigHand);
 	
@@ -53,23 +52,23 @@ void Adjudicator::checkHand(std::vector<Card>& h) {
 	// cool
 	switch (base) {
 	case 0:
-		junkHighCard(h);
-	case 1:
+		//junkHighCard(h);
 		pair(h);
-	case 2:
+	case 1:
 		twoPair(h);
-	case 3:
+	case 2:
 		threeOfAKind(h);
-	case 4:
+	case 3:
 		straight(h);
-	case 5:
+	case 4:
 		flush(h);
-	case 6:
+	case 5:
 		fullHouse(h);
-	case 7:
+	case 6:
 		fourOfAKind(h);
-	case 8:
+	case 7:
 		straightFlush(h);
+	case 8:
 		royalFlush(h);
 	case 9:
 		// Royal flush was achieved.
@@ -85,59 +84,63 @@ void Adjudicator::checkHand(std::vector<Card>& h) {
 
 void Adjudicator::royalFlush(std::vector<Card>& hand) {
 
-	int r = hand[0].getRank();
-	if (r!=12) { return; }
+	if (hand[0].getRank()!=12) { return; }
 
 	int s = hand[0].getSuit();
 
 	for (int i = 1; i < 5; ++i) {
-		if ((hand[i].getSuit() != s) || 
-			(hand[i].getRank() != r - i)) { return; }
+		if ((hand[i].getSuit() != hand[0].getSuit()) ||
+			(hand[i].getRank() != hand[0].getRank() - i)) { return; }
 	}
 	
 	score = { 9 };
 }
 
 void Adjudicator::straightFlush(std::vector<Card>& hand) {
-	int r = hand[0].getRank();
-	int s = hand[0].getSuit();
 
 	for (int i = 1; i < 5; ++i) {
-		if ((hand[i].getSuit() != s) ||
-			(hand[i].getRank() != r - i)) { return; }
+		if ((hand[i].getSuit() != hand[0].getSuit()) ||
+			(hand[i].getRank() != hand[0].getRank() - i)) { return; }
 	}
 
-	score = std::max(std::vector<int>{ 8, r }, score);
+	score = std::max(std::vector<int>{ 8, hand[0].getRank() }, score);
 }
 
 void Adjudicator::fourOfAKind(std::vector<Card>& hand) {
-	int r = hand[0].getRank();
 
-	for (int i = 1; i < 4; ++i) {
-		if (hand[i].getRank() != r) { return; }
+	for (int i = 0; i < 2; ++i) {
+		if (hand[0+i].getRank() == hand[3+i].getRank()) {
+			score = std::max(std::vector<int>{ 7, hand[0+i].getRank(), hand[(4+i)%5].getRank() }, score);
+			return;
+		}
 	}
 
-	score = std::max(std::vector<int>{ 7, r, hand[4].getRank() }, score);
+	return;
 }
 
 void Adjudicator::fullHouse(std::vector<Card>& hand) {
-	int r = hand[0].getRank();
 
-	for (int i = 1; i < 3; ++i) {
-		if (hand[i].getRank() != r) { return; }
+	if (hand[0].getRank() == hand[1].getRank()) {
+		for (int i = 2; i < 5; ++i) {
+			if (hand[i].getRank() != hand[2].getRank()) { return; }
+		}
 	}
 
-	if (hand[3].getRank() != hand[4].getRank()) { return; }
+	else if (hand[3].getRank() == hand[4].getRank()) {
+		for (int i = 0; i < 3; ++i) {
+			if (hand[i].getRank() != hand[2].getRank()) { return; }
+		}
+	}
 
-	score = std::max(std::vector<int>{ 6, std::max(r, hand[3].getRank()), std::min(r, hand[3].getRank()) }, score);
+	else { return; }
+
+	score = std::max(std::vector<int>{ 6, std::max(hand[0].getRank(), hand[3].getRank()), std::min(hand[0].getRank(), hand[3].getRank()) }, score);
 }
 
 void Adjudicator::flush(std::vector<Card>& hand) {
-	int s = hand[0].getSuit();
 
 	for (int i = 1; i < 5; ++i) {
-		if ((hand[i].getSuit() != s) ||
-			(hand[i].getRank() >= hand[i-1].getRank())) { return; }
+		if (hand[i].getSuit() != hand[0].getSuit()) { return; }
 	}
 
 	score = std::max(std::vector<int>{	5, 
@@ -151,13 +154,12 @@ void Adjudicator::flush(std::vector<Card>& hand) {
 }
 
 void Adjudicator::straight(std::vector<Card>& hand) {
-	int r = hand[0].getRank();
 
 	for (int i = 1; i < 5; ++i) {
-		if (hand[i].getRank() != r - i) { return; }
+		if (hand[i].getRank() != hand[0].getRank() - i) { return; }
 	}
 
-	score = std::max(std::vector<int> { 4, r }, score);
+	score = std::max(std::vector<int> { 4, hand[0].getRank() }, score);
 }
 
 void Adjudicator::threeOfAKind(std::vector<Card>& hand) {
@@ -172,6 +174,7 @@ void Adjudicator::threeOfAKind(std::vector<Card>& hand) {
 												std::min(hand[3-(i*3)].getRank(), hand[4].getRank())
 												}
 							, score);
+			return;
 		}
 	}
 
@@ -180,31 +183,49 @@ void Adjudicator::threeOfAKind(std::vector<Card>& hand) {
 
 void Adjudicator::twoPair(std::vector<Card>& hand) {
 
-	for (int i = 0; i < 2; ++i) {
-		if ((hand[ 0 ].getRank() == hand[ 1 ].getRank()) &&
-			(hand[2+i].getRank() == hand[3+i].getRank())) {
-
+	if (hand[0].getRank() == hand[1].getRank()) {
+		if (hand[2].getRank() == hand[3].getRank()) {
 			score = std::max(std::vector<int>{	2,
-												std::max(hand[0].getRank(), hand[2+i].getRank()),
-												std::min(hand[0].getRank(), hand[2+i].getRank()),
-												hand[4 - (i*2)].getRank() 
+												hand[0].getRank(),
+												hand[2].getRank(),
+												hand[4].getRank()
+												}
+							, score);
+		}
+		else if (hand[3].getRank() == hand[4].getRank()) {
+			score = std::max(std::vector<int>{	2,
+												hand[0].getRank(),
+												hand[3].getRank(),
+												hand[2].getRank()
+												}
+							, score);
+		}
+	}
+	else if (hand[1].getRank() == hand[2].getRank()) {
+		if (hand[3].getRank() == hand[4].getRank()) {
+			score = std::max(std::vector<int>{	2,
+												hand[1].getRank(),
+												hand[3].getRank(),
+												hand[0].getRank()
 												}
 							, score);
 		}
 	}
 
+
 	return;
 }
 
 void Adjudicator::pair(std::vector<Card>& hand) {
-	for (int i = 0; i < 2; ++i) {
+	for (int i = 0; i < 4; ++i) {
 		if (hand[i].getRank() == hand[i + 1].getRank()) {
 
 			score = std::max(std::vector<int>{	1,
 												hand[i].getRank(), 
-												std::max(std::max(hand[(i + 2)].getRank(), hand[(i + 3)].getRank()), hand[(i + 4) % 5].getRank())
+												std::max(std::max(hand[(i + 2) % 5].getRank(), hand[(i + 3) % 5].getRank()), hand[(i + 4) % 5].getRank())
 												}
 							, score);
+			return;
 		}
 	}
 
