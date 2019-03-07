@@ -14,7 +14,7 @@ private:
 	static std::vector<Card> h;
 	//static std::vector<Card> r_h;
 	static std::vector<int> score;
-	static void				combinationChecker	(std::vector<Card>& bh, int off = 0, int k = 5);
+	static void				combinationChecker	(const std::vector<Card>& bh, int off = 0, int k = 5);
 	static void				checkHand			(std::vector<Card>& hand);
 	//static void			royalFlush			(std::vector<Card>& hand);
 	static void				straightFlush		(std::vector<Card>& hand);

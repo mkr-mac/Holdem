@@ -2,7 +2,7 @@
 
 std::vector<Card> Adjudicator::h(5);
 //std::vector<Card> Adjudicator::r_h(5);
-std::vector<int> Adjudicator::score;
+std::vector<int> Adjudicator::score(6);
 
 std::vector<int> Adjudicator::handValue(const std::vector<Card>& communityCards, const std::vector<Card>& playerHand) {
 	//make one big hand to mess with
@@ -28,7 +28,7 @@ std::vector<int> Adjudicator::handValue(const std::vector<Card>& communityCards,
 	return score;
 }
 // Take an iterative approach???
-void Adjudicator::combinationChecker(std::vector<Card>& bh, int off, int k) {
+void Adjudicator::combinationChecker(const std::vector<Card>& bh, int off, int k) {
 	// Recursion.
 	// Yeah, I'm supprised it works too.
 	if (k == 0) {
@@ -37,12 +37,20 @@ void Adjudicator::combinationChecker(std::vector<Card>& bh, int off, int k) {
 		//checkHand(r_h);
 		return;
 	}
+	/*
+	for (auto it = off; it != bh.end() - k; ++it) {
+		h.emplace_back((Card&)*it);
+		combinationChecker(bh, it + 1, k - 1);
+		h.pop_back();
+		//h.end() -= 1;
+	}
+	*/
 	for (int i = off; i <= bh.size() - k; ++i) {
 		h.emplace_back(bh[i]);
 		combinationChecker(bh, i + 1, k - 1);
+		//h.end() -= 1;
 		h.pop_back();
 	}
-
 	return;
 }
 
@@ -248,7 +256,7 @@ void Adjudicator::pair(std::vector<Card>& hand) {
 	}
 	return;
 }
-
+// Best High card
 void Adjudicator::junkHighCard(std::vector<Card>& hand) {
 	
 	if (hand[0].getRank() >= hand[4].getRank()) {
