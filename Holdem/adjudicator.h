@@ -3,6 +3,7 @@
 #include <vector>
 #include <algorithm>
 #include <math.h>
+#include <iterator>
 
 class Adjudicator {
 public:
@@ -14,7 +15,9 @@ private:
 	static std::vector<Card> h;
 	//static std::vector<Card> r_h;
 	static std::vector<int> score;
-	static void				combinationChecker	(const std::vector<Card>& bh, int off = 0, int k = 5);
+	// The "hand" that has all the cards we're testing
+	static std::vector<Card> bh;
+	static void				combinationChecker	(std::vector<Card>::const_iterator off, int k = 5);
 	static void				checkHand			(std::vector<Card>& hand);
 	//static void			royalFlush			(std::vector<Card>& hand);
 	static void				straightFlush		(std::vector<Card>& hand);

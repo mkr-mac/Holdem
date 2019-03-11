@@ -1,34 +1,37 @@
 #include "adjudicator.h"
 
+std::vector<Card> Adjudicator::bh;
 std::vector<Card> Adjudicator::h(5);
 //std::vector<Card> Adjudicator::r_h(5);
 std::vector<int> Adjudicator::score(6);
 
 std::vector<int> Adjudicator::handValue(const std::vector<Card>& communityCards, const std::vector<Card>& playerHand) {
 	//make one big hand to mess with
+	bh.shrink_to_fit();
+	bh.reserve(communityCards.size() + playerHand.size());
 
-	std::vector<Card> bigHand = communityCards;
+	bh = communityCards;
 
-	for (const Card& d : playerHand) {
-		bigHand.push_back(d);
+	for (auto it = playerHand.begin(); it != playerHand.end(); ++it) {
+		bh.emplace_back(*it);
 	}
-
-	score.clear();
+	
 	h.clear();
+	score.clear();
 	//r_h.clear();
 
-	std::sort	(bigHand.begin(), bigHand.end());
-	std::reverse(bigHand.begin(), bigHand.end());
+	std::sort	(bh.begin(), bh.end());
+	std::reverse(bh.begin(), bh.end());
 
 	// Best High card
-	junkHighCard(bigHand);
+	junkHighCard(bh);
 	// The real work is done here!
-	combinationChecker(bigHand);
+	combinationChecker(bh.cbegin());
 	
 	return score;
 }
 // Take an iterative approach???
-void Adjudicator::combinationChecker(const std::vector<Card>& bh, int off, int k) {
+void Adjudicator::combinationChecker(std::vector<Card>::const_iterator off, int k) {
 	// Recursion.
 	// Yeah, I'm supprised it works too.
 	if (k == 0) {
@@ -45,11 +48,11 @@ void Adjudicator::combinationChecker(const std::vector<Card>& bh, int off, int k
 		//h.end() -= 1;
 	}
 	*/
-	for (int i = off; i <= bh.size() - k; ++i) {
-		h.emplace_back(bh[i]);
-		combinationChecker(bh, i + 1, k - 1);
+	for (auto it = off; it <= bh.end() - k; ++it) {
+		h[5-k] = *it;
+		combinationChecker(it + 1, k - 1);
 		//h.end() -= 1;
-		h.pop_back();
+		//h.pop_back();
 	}
 	return;
 }
@@ -172,10 +175,14 @@ void Adjudicator::flush(std::vector<Card>& hand) {
 
 void Adjudicator::straight(std::vector<Card>& hand) {
 
+	/*
+	for (auto it = hand.begin(); it <= hand.end(); ++it) {
+		if ((*it).getRank() != (*(it-1)).getRank()-1) { return; }
+	}
+	*/
 	for (int i = 1; i < 5; ++i) {
 		if (hand[i].getRank() != hand[0].getRank() - i) { return; }
 	}
-
 	score = std::max(std::vector<int> { 4, hand[0].getRank() }, score);
 	return;
 }
@@ -183,6 +190,7 @@ void Adjudicator::straight(std::vector<Card>& hand) {
 void Adjudicator::threeOfAKind(std::vector<Card>& hand) {
 
 	for (int i = 0; i < 2; ++i) {
+		auto a = hand.begin() + i;
 		if (hand[0+i].getRank() == hand[1+i].getRank() &&
 			hand[1+i].getRank() == hand[2+i].getRank()) {
 
@@ -248,7 +256,9 @@ void Adjudicator::pair(std::vector<Card>& hand) {
 
 			score = std::max(std::vector<int>{	1,
 												hand[i].getRank(), 
-												std::max(std::max(hand[(i + 2) % 5].getRank(), hand[(i + 3) % 5].getRank()), hand[(i + 4) % 5].getRank())
+												hand[(i+2)%5].getRank(),
+												hand[(i+3)%5].getRank(),
+												hand[(i+4)%5].getRank()
 												}
 							, score);
 			return;
